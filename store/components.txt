@@ -1,0 +1,15 @@
+Catalog management:
+
+It is required to deliver the customized content to the screen or the GUI used by the customer.
+
+The software used for catalog management combines the different product data formats into a standard format for viewing, aggregating, and interacting catalog data into a central store.
+
+Shopping cart
+
+A model known as the shopping cart is used by eCommerce sites to track the items that are selected for purchase; the shopping cart allows customers to view all the items selected by them.
+
+The customers can add new items and remove the previously selected items from the shopping cart.
+
+Transaction processing:
+
+E-commerce transaction processing is used to process the data received from the. Shopping cart and to calculate the total cost of the purchase.
