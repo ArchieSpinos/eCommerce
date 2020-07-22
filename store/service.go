@@ -10,23 +10,16 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type Repository struct{}
-
-const (
-	MondgoConString = "mongodb://root:secret@localhost"
-	Database        = "store"
-	Collection      = "mobiles"
-)
+type Repository struct {
+	Database   string
+	Collection string
+	Session    *mgo.Session
+}
 
 func (r Repository) GetProducts() Products {
-	session, err := mgo.Dial(MondgoConString)
+	// defer r.Session.Close()
 
-	if err != nil {
-		log.Fatalf("Failed to establish connection to Mongo server: %v", err)
-	}
-	defer session.Close()
-
-	c := session.DB(Database).C(Collection)
+	c := r.Session.DB(r.Database).C(r.Collection)
 	results := Products{}
 
 	if err := c.Find(nil).All(&results); err != nil {
@@ -37,14 +30,9 @@ func (r Repository) GetProducts() Products {
 }
 
 func (r Repository) GetProductById(id int) Product {
-	session, err := mgo.Dial(MondgoConString)
+	defer r.Session.Close()
 
-	if err != nil {
-		log.Fatalf("Failed to establish connection to Mongo server: %v", err)
-	}
-	defer session.Close()
-
-	c := session.DB(Database).C(Collection)
+	c := r.Session.DB(r.Database).C(r.Collection)
 	result := Product{}
 
 	fmt.Println("ID in GetProductById", id)
@@ -55,14 +43,9 @@ func (r Repository) GetProductById(id int) Product {
 }
 
 func (r Repository) GetProductsByString(query string) Products {
-	session, err := mgo.Dial(MondgoConString)
+	defer r.Session.Close()
 
-	if err != nil {
-		log.Fatalf("Failed to establish connection to Mongo server: %v", err)
-	}
-	defer session.Close()
-
-	c := session.DB(Database).C(Collection)
+	c := r.Session.DB(r.Database).C(r.Collection)
 	result := Products{}
 
 	qs := strings.Split(query, " ")
@@ -81,14 +64,9 @@ func (r Repository) GetProductsByString(query string) Products {
 }
 
 func (r Repository) AddProduct(product Product) error {
-	session, err := mgo.Dial(MondgoConString)
+	defer r.Session.Close()
 
-	if err != nil {
-		log.Fatalf("Failed to establish connection to Mongo server: %v", err)
-	}
-	defer session.Close()
-
-	if err = session.DB(Database).C(Collection).Insert(product); err != nil {
+	if err := r.Session.DB(r.Database).C(r.Collection).Insert(product); err != nil {
 		log.Fatalf("Failed to insert product: %s", err)
 	}
 
@@ -96,27 +74,17 @@ func (r Repository) AddProduct(product Product) error {
 }
 
 func (r Repository) UpdateProduct(product Product) error {
-	session, err := mgo.Dial(MondgoConString)
+	defer r.Session.Close()
 
-	if err != nil {
-		log.Fatalf("Failed to establish connection to Mongo server: %v", err)
-	}
-	defer session.Close()
-
-	if _, err = session.DB(Database).C(Collection).UpsertId(product.ID, product); err != nil {
+	if _, err := r.Session.DB(r.Database).C(r.Collection).UpsertId(product.ID, product); err != nil {
 		log.Fatalf("Failed to update product: %s", err)
 	}
 	return nil
 }
 
 func (r Repository) DeleteProduct(id int) error {
-	session, err := mgo.Dial(MondgoConString)
-
-	if err != nil {
-		log.Fatalf("Failed to establish connection to Mongo server: %v", err)
-	}
-	defer session.Close()
-	if err = session.DB(Database).C(Collection).RemoveId(id); err != nil {
+	defer r.Session.Close()
+	if err := r.Session.DB(r.Database).C(r.Collection).RemoveId(id); err != nil {
 		log.Fatalf("Failed to delete product: %s", err)
 	}
 	return nil

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/ArchieSpinos/eCommerce/store"
+	"github.com/ArchieSpinos/eCommerce/controllers"
 	"github.com/gorilla/handlers"
 )
 
@@ -18,7 +18,7 @@ func main() {
 		log.Fatal("$PORT must be set")
 	}
 
-	router := store.NewRouter()
+	router := controllers.NewRouter()
 
 	allowdOrigins := handlers.AllowedOrigins([]string{"*"})
 	allowedMethods := handlers.AllowedMethods([]string{"GET"})

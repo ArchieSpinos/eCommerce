@@ -9,6 +9,14 @@
 <body>
     <div id="main">
         <h1> Vue.JS API Call</h1>
+        <button type = "button" id = "get-documents" @click = "fetchAPIData">Get mongo document</button>
+        <div v-if = "responseAvailable == true">
+            <hr>
+            <p>
+                <i>{{result}}</i>
+            </p>
+            <hr>
+        </div>
     </div>
 </body>
 <!-- Vue and Custom JavaScript-->
